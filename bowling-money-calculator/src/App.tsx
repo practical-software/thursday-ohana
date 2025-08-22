@@ -164,10 +164,6 @@ function App() {
   const totalPaidOverall =
     totalToTeamCaptain + moneyGivenToPartners - moneyGivenToMe;
 
-  const cashCollectedFromPartners =
-    state.doublesEntries.filter((entry) => entry.moneyTransfer === "theyGaveMe")
-      .length * PRICING.doublesPartnerPayment;
-
   return (
     <Container size="lg" px="md" py="xl">
       <Stack gap="xl">
@@ -193,7 +189,7 @@ function App() {
               value={state.bowlerType}
               onChange={(value) => updateBowlerType(value as BowlerType)}
               size="md"
-              fullWidth={{ base: true, md: false }}
+              fullWidth={false}
             />
             <Badge variant="filled" color="blue" size="lg">
               {formatCurrency(lineageTotal)}
@@ -211,7 +207,7 @@ function App() {
               variant={state.sidePots.scratch ? "filled" : "outline"}
               onClick={() => updateSidePot("scratch", !state.sidePots.scratch)}
               size="md"
-              fullWidth={{ base: true, md: false }}
+              fullWidth={false}
               style={{ flex: 1, minWidth: 0 }}
             >
               Scratch {formatCurrency(PRICING.scratch)}
@@ -222,7 +218,7 @@ function App() {
                 updateSidePot("handicap", !state.sidePots.handicap)
               }
               size="md"
-              fullWidth={{ base: true, md: false }}
+              fullWidth={false}
               style={{ flex: 1, minWidth: 0 }}
             >
               Handicap {formatCurrency(PRICING.handicap)}
@@ -238,7 +234,7 @@ function App() {
                 )
               }
               size="md"
-              fullWidth={{ base: true, md: false }}
+              fullWidth={false}
               style={{ flex: 1, minWidth: 0 }}
             >
               Optional Side Handicap{" "}
@@ -270,7 +266,7 @@ function App() {
               onClick={addDoublesEntry}
               disabled={!newPartnerName.trim()}
               size="md"
-              fullWidth={{ base: true, md: false }}
+              fullWidth={false}
               style={{ maxWidth: "200px" }}
             >
               Add Team
@@ -317,7 +313,7 @@ function App() {
                             })
                           }
                           size="xs"
-                          fullWidth={{ base: true, md: false }}
+                          fullWidth={false}
                         />
                       </Table.Td>
                       <Table.Td>
