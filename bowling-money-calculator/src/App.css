@@ -109,6 +109,7 @@
     flex: 1;
     min-width: 0;
     max-width: none;
+    width: auto;
   }
 
   /* On larger screens, constrain the add team button width */
@@ -124,12 +125,12 @@
   }
 
   .lineage-control {
-    flex: 1;
-    min-width: 0;
+    width: 100% !important;
+    max-width: none !important;
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   /* On mobile, ensure side pot buttons stack and take full width */
   .side-pots-container {
     flex-direction: column;
@@ -235,7 +236,7 @@
 }
 
 /* Desktop styles */
-@media (min-width: 411px) {
+@media (min-width: 521px) {
   .table-mobile-cards {
     display: none !important;
   }
@@ -256,6 +257,11 @@
   .responsive-table .mantine-Table-td .mantine-Text-root {
     font-size: 1rem;
   }
+
+  /* Make names slightly wider (more font weight) on medium screens and larger */
+  .responsive-table .mantine-Table-td .mantine-Text-root {
+    font-weight: 500;
+  }
 }
 
 /* Large screens and up - even larger table text */
@@ -272,7 +278,7 @@
 }
 
 /* Mobile styles */
-@media (max-width: 410px) {
+@media (max-width: 520px) {
   .responsive-table-container {
     display: none;
   }
