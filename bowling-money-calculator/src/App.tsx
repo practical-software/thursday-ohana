@@ -129,7 +129,10 @@ function App() {
       }
     } else {
       console.log("No saved state found in localStorage, using default state");
-      setState(getDefaultState());
+      // Ensure calculator tab is selected when localStorage is blank
+      const defaultState = getDefaultState();
+      defaultState.activeTab = "calculator";
+      setState(defaultState);
     }
     setIsInitialized(true);
   }, []);
