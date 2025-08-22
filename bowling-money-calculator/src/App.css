@@ -5,6 +5,14 @@
   text-align: center;
 }
 
+/* Mobile responsive utilities */
+@media (max-width: 768px) {
+  #root {
+    padding: 1rem;
+    text-align: left;
+  }
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -39,4 +47,23 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Additional mobile responsive styles */
+@media (max-width: 768px) {
+  .card {
+    padding: 1rem;
+  }
+
+  /* Ensure tables are properly scrollable on mobile */
+  .mantine-Table-root {
+    min-width: 100%;
+  }
+
+  /* Better touch targets for mobile */
+  .mantine-Button-root,
+  .mantine-SegmentedControl-root,
+  .mantine-ActionIcon-root {
+    min-height: 44px;
+  }
 }

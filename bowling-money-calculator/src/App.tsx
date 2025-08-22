@@ -77,12 +77,34 @@ function App() {
     }));
   };
 
+  // Get available partner names (excluding already selected ones)
+  const getAvailablePartnerNames = () => {
+    const selectedNames = new Set(
+      state.doublesEntries.map((entry) => entry.partnerName.toLowerCase())
+    );
+    return FAKE_PARTNER_NAMES.filter(
+      (name) => !selectedNames.has(name.toLowerCase())
+    );
+  };
+
   const addDoublesEntry = () => {
     if (!newPartnerName.trim()) return;
 
+    const trimmedName = newPartnerName.trim();
+
+    // Check if partner is already added (case-insensitive)
+    const isAlreadyAdded = state.doublesEntries.some(
+      (entry) => entry.partnerName.toLowerCase() === trimmedName.toLowerCase()
+    );
+
+    if (isAlreadyAdded) {
+      alert(`${trimmedName} is already added as a partner.`);
+      return;
+    }
+
     const newEntry: DoublesEntry = {
       id: uuidv4(),
-      partnerName: newPartnerName.trim(),
+      partnerName: trimmedName,
       moneyTransfer: "noMoneyYet",
     };
 
@@ -147,10 +169,10 @@ function App() {
       .length * PRICING.doublesPartnerPayment;
 
   return (
-    <Container size="lg" py="xl">
+    <Container size="lg" px="md" py="xl">
       <Stack gap="xl">
         {/* Header */}
-        <Group justify="space-between" align="center">
+        <Group justify="space-between" align="center" wrap="wrap" gap="xs">
           <Title order={1}>Bowling League Money Calculator</Title>
           <Button variant="light" color="red" onClick={resetApp}>
             Reset
@@ -162,7 +184,7 @@ function App() {
           <Title order={3} mb="md">
             Lineage
           </Title>
-          <Group align="center">
+          <Group align="center" wrap="wrap" gap="xs">
             <SegmentedControl
               data={[
                 { label: "Regular", value: "regular" },
@@ -170,6 +192,8 @@ function App() {
               ]}
               value={state.bowlerType}
               onChange={(value) => updateBowlerType(value as BowlerType)}
+              size="md"
+              fullWidth={{ base: true, md: false }}
             />
             <Badge variant="filled" color="blue" size="lg">
               {formatCurrency(lineageTotal)}
@@ -182,11 +206,13 @@ function App() {
           <Title order={3} mb="md">
             Side Pots
           </Title>
-          <Group mb="md">
+          <Group gap="xs" mb="md" wrap="wrap">
             <Button
               variant={state.sidePots.scratch ? "filled" : "outline"}
               onClick={() => updateSidePot("scratch", !state.sidePots.scratch)}
               size="md"
+              fullWidth={{ base: true, md: false }}
+              style={{ flex: 1, minWidth: 0 }}
             >
               Scratch {formatCurrency(PRICING.scratch)}
             </Button>
@@ -196,6 +222,8 @@ function App() {
                 updateSidePot("handicap", !state.sidePots.handicap)
               }
               size="md"
+              fullWidth={{ base: true, md: false }}
+              style={{ flex: 1, minWidth: 0 }}
             >
               Handicap {formatCurrency(PRICING.handicap)}
             </Button>
@@ -210,6 +238,8 @@ function App() {
                 )
               }
               size="md"
+              fullWidth={{ base: true, md: false }}
+              style={{ flex: 1, minWidth: 0 }}
             >
               Optional Side Handicap{" "}
               {formatCurrency(PRICING.optionalSideHandicap)}
@@ -227,71 +257,91 @@ function App() {
           </Title>
 
           {/* Add new entry form */}
-          <Group mb="lg" align="end">
+          <Stack gap="xs" mb="lg">
             <Autocomplete
               label="Partner Name"
               placeholder="Enter partner name"
-              data={FAKE_PARTNER_NAMES}
+              data={getAvailablePartnerNames()}
               value={newPartnerName}
               onChange={setNewPartnerName}
-              style={{ flex: 1 }}
+              size="md"
             />
-            <Button onClick={addDoublesEntry} disabled={!newPartnerName.trim()}>
+            <Button
+              onClick={addDoublesEntry}
+              disabled={!newPartnerName.trim()}
+              size="md"
+              fullWidth={{ base: true, md: false }}
+              style={{ maxWidth: "200px" }}
+            >
               Add Team
             </Button>
-          </Group>
+          </Stack>
 
           {/* Doubles entries table */}
           {state.doublesEntries.length > 0 && (
-            <Table striped highlightOnHover>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>Partner</Table.Th>
-                  <Table.Th>Money Exchanged</Table.Th>
-                  <Table.Th>Team Cost</Table.Th>
-                  <Table.Th>Actions</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {state.doublesEntries.map((entry) => (
-                  <Table.Tr key={entry.id}>
-                    <Table.Td>{entry.partnerName}</Table.Td>
-                    <Table.Td>
-                      <SegmentedControl
-                        data={[
-                          { label: "No money yet", value: "noMoneyYet" },
-                          { label: "I gave $3", value: "iGave" },
-                          { label: "They gave me $3", value: "theyGaveMe" },
-                        ]}
-                        value={entry.moneyTransfer}
-                        onChange={(value) =>
-                          updateDoublesEntry(entry.id, {
-                            moneyTransfer: value as MoneyTransferType,
-                          })
-                        }
-                        size="xs"
-                      />
-                    </Table.Td>
-                    <Table.Td>
-                      <Text fw={500}>
-                        {entry.moneyTransfer === "theyGaveMe"
-                          ? formatCurrency(PRICING.doublesTeamCost)
-                          : formatCurrency(0)}
-                      </Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <ActionIcon
-                        variant="subtle"
-                        color="red"
-                        onClick={() => removeDoublesEntry(entry.id)}
-                      >
-                        <IconTrash size={16} />
-                      </ActionIcon>
-                    </Table.Td>
+            <div style={{ overflowX: "auto" }}>
+              <Table striped highlightOnHover>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th style={{ whiteSpace: "nowrap" }}>
+                      Partner
+                    </Table.Th>
+                    <Table.Th style={{ minWidth: "200px" }}>
+                      Money Exchanged
+                    </Table.Th>
+                    <Table.Th style={{ whiteSpace: "nowrap" }}>
+                      Team Cost
+                    </Table.Th>
+                    <Table.Th style={{ whiteSpace: "nowrap" }}>
+                      Actions
+                    </Table.Th>
                   </Table.Tr>
-                ))}
-              </Table.Tbody>
-            </Table>
+                </Table.Thead>
+                <Table.Tbody>
+                  {state.doublesEntries.map((entry) => (
+                    <Table.Tr key={entry.id}>
+                      <Table.Td>
+                        <Text size="sm">{entry.partnerName}</Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <SegmentedControl
+                          data={[
+                            { label: "No money yet", value: "noMoneyYet" },
+                            { label: "I gave $3", value: "iGave" },
+                            { label: "They gave me $3", value: "theyGaveMe" },
+                          ]}
+                          value={entry.moneyTransfer}
+                          onChange={(value) =>
+                            updateDoublesEntry(entry.id, {
+                              moneyTransfer: value as MoneyTransferType,
+                            })
+                          }
+                          size="xs"
+                          fullWidth={{ base: true, md: false }}
+                        />
+                      </Table.Td>
+                      <Table.Td>
+                        <Text fw={500} size="sm">
+                          {entry.moneyTransfer === "theyGaveMe"
+                            ? formatCurrency(PRICING.doublesTeamCost)
+                            : formatCurrency(0)}
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <ActionIcon
+                          variant="subtle"
+                          color="red"
+                          onClick={() => removeDoublesEntry(entry.id)}
+                          size="md"
+                        >
+                          <IconTrash size={16} />
+                        </ActionIcon>
+                      </Table.Td>
+                    </Table.Tr>
+                  ))}
+                </Table.Tbody>
+              </Table>
+            </div>
           )}
         </Card>
 
@@ -301,39 +351,23 @@ function App() {
             Totals
           </Title>
           <Stack gap="sm">
-            <Group justify="space-between">
-              <Text>Lineage:</Text>
-              <Text>{formatCurrency(lineageTotal)}</Text>
+            <Group justify="space-between" wrap="wrap" gap="xs">
+              <Text size="md">Lineage:</Text>
+              <Text size="md">{formatCurrency(lineageTotal)}</Text>
             </Group>
-            <Group justify="space-between">
-              <Text>Side pots:</Text>
-              <Text>{formatCurrency(sidepotTotal)}</Text>
+            <Group justify="space-between" wrap="wrap" gap="xs">
+              <Text size="md">Side pots:</Text>
+              <Text size="md">{formatCurrency(sidepotTotal)}</Text>
             </Group>
-            <Group justify="space-between">
-              <Text>
+            <Group justify="space-between" wrap="wrap" gap="xs">
+              <Text size="sm">
                 Doubles you pay ({doublesTheyGaveMeCount} ×{" "}
                 {formatCurrency(PRICING.doublesTeamCost)}):
               </Text>
-              <Text>{formatCurrency(doublesToCaptain)}</Text>
+              <Text size="md">{formatCurrency(doublesToCaptain)}</Text>
             </Group>
 
-            <Divider />
-            <Group justify="space-between">
-              <Text>
-                Money given to partners ({doublesIGaveCount} ×{" "}
-                {formatCurrency(PRICING.doublesPartnerPayment)}):
-              </Text>
-              <Text>{formatCurrency(moneyGivenToPartners)}</Text>
-            </Group>
-
-            <Group justify="space-between">
-              <Text>
-                Money given to me ({doublesTheyGaveMeCount} ×{" "}
-                {formatCurrency(PRICING.doublesPartnerPayment)}):
-              </Text>
-              <Text>+{formatCurrency(moneyGivenToMe)}</Text>
-            </Group>
-            <Group justify="space-between">
+            <Group justify="space-between" wrap="wrap" gap="xs">
               <Text fw={600} size="lg">
                 Total to team captain:
               </Text>
@@ -343,20 +377,32 @@ function App() {
             </Group>
 
             <Divider />
+            <Group justify="space-between" wrap="wrap" gap="xs">
+              <Text size="sm">
+                Money given to partners ({doublesIGaveCount} ×{" "}
+                {formatCurrency(PRICING.doublesPartnerPayment)}):
+              </Text>
+              <Text size="md">{formatCurrency(moneyGivenToPartners)}</Text>
+            </Group>
 
-            <Group justify="space-between">
+            <Group justify="space-between" wrap="wrap" gap="xs">
+              <Text size="sm">
+                Money given to me ({doublesTheyGaveMeCount} ×{" "}
+                {formatCurrency(PRICING.doublesPartnerPayment)}):
+              </Text>
+              <Text size="md">-{formatCurrency(moneyGivenToMe)}</Text>
+            </Group>
+
+            <Divider />
+
+            <Group justify="space-between" wrap="wrap" gap="xs">
               <Text fw={700} size="xl">
-                Total I spent overall:
+                Overall Total:
               </Text>
               <Text fw={700} size="xl">
                 {formatCurrency(totalPaidOverall)}
               </Text>
             </Group>
-
-            <Text c="dimmed" size="sm" ta="center">
-              Cash collected from partners:{" "}
-              {formatCurrency(cashCollectedFromPartners)} (for reference only)
-            </Text>
           </Stack>
         </Card>
       </Stack>
