@@ -180,7 +180,12 @@ function App() {
           <Title order={3} mb="md">
             Lineage
           </Title>
-          <Group align="center" wrap="wrap" gap="xs">
+          <Group
+            align="center"
+            wrap="wrap"
+            gap="xs"
+            className="lineage-container"
+          >
             <SegmentedControl
               data={[
                 { label: "Regular", value: "regular" },
@@ -189,7 +194,7 @@ function App() {
               value={state.bowlerType}
               onChange={(value) => updateBowlerType(value as BowlerType)}
               size="md"
-              fullWidth={false}
+              className="lineage-control"
             />
             <Badge variant="filled" color="blue" size="lg">
               {formatCurrency(lineageTotal)}
@@ -202,13 +207,12 @@ function App() {
           <Title order={3} mb="md">
             Side Pots
           </Title>
-          <Group gap="xs" mb="md" wrap="wrap">
+          <Group gap="xs" mb="md" wrap="wrap" className="side-pots-container">
             <Button
               variant={state.sidePots.scratch ? "filled" : "outline"}
               onClick={() => updateSidePot("scratch", !state.sidePots.scratch)}
               size="md"
-              fullWidth={false}
-              style={{ flex: 1, minWidth: 0 }}
+              className="side-pot-button"
             >
               Scratch {formatCurrency(PRICING.scratch)}
             </Button>
@@ -218,8 +222,7 @@ function App() {
                 updateSidePot("handicap", !state.sidePots.handicap)
               }
               size="md"
-              fullWidth={false}
-              style={{ flex: 1, minWidth: 0 }}
+              className="side-pot-button"
             >
               Handicap {formatCurrency(PRICING.handicap)}
             </Button>
@@ -234,8 +237,7 @@ function App() {
                 )
               }
               size="md"
-              fullWidth={false}
-              style={{ flex: 1, minWidth: 0 }}
+              className="side-pot-button"
             >
               Optional Side Handicap{" "}
               {formatCurrency(PRICING.optionalSideHandicap)}
@@ -266,8 +268,8 @@ function App() {
               onClick={addDoublesEntry}
               disabled={!newPartnerName.trim()}
               size="md"
-              fullWidth={false}
-              style={{ maxWidth: "200px" }}
+              fullWidth
+              className="add-team-button"
             >
               Add Team
             </Button>
@@ -313,7 +315,8 @@ function App() {
                             })
                           }
                           size="xs"
-                          fullWidth={false}
+                          fullWidth
+                          className="money-transfer-control"
                         />
                       </Table.Td>
                       <Table.Td>

@@ -67,3 +67,59 @@
     min-height: 44px;
   }
 }
+
+/* Responsive button layouts */
+@media (min-width: 769px) {
+  /* On larger screens, make side pot buttons display in a row */
+  .side-pots-container {
+    flex-direction: row;
+  }
+
+  .side-pot-button {
+    flex: 1;
+    min-width: 0;
+    max-width: none;
+  }
+
+  /* On larger screens, constrain the add team button width */
+  .add-team-button {
+    max-width: 200px;
+  }
+
+  /* On larger screens, ensure lineage controls are properly aligned */
+  .lineage-container {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .lineage-control {
+    flex: 0 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  /* On mobile, ensure side pot buttons stack and take full width */
+  .side-pots-container {
+    flex-direction: column;
+  }
+
+  .side-pot-button {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  /* Ensure money transfer controls are properly sized on mobile */
+  .money-transfer-control {
+    min-width: 100%;
+  }
+
+  /* Ensure lineage controls stack on mobile */
+  .lineage-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .lineage-control {
+    width: 100%;
+  }
+}
