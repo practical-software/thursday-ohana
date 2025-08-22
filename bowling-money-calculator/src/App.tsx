@@ -319,14 +319,6 @@ function App() {
     setModalOpen(true);
   };
 
-  const showConfirm = (title: string, message: string, action: () => void) => {
-    setModalTitle(title);
-    setModalMessage(message);
-    setModalAction(() => action);
-    setIsAlertModal(false);
-    setModalOpen(true);
-  };
-
   const handleModalConfirm = () => {
     if (modalAction) {
       modalAction();
